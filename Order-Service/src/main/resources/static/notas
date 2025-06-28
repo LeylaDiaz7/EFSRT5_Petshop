@@ -1,0 +1,6 @@
+Este servicio está listo para:
+- Registrar nuevas órdenes
+- Consultar órdenes por usuario
+- Cancelar órdenes
+- Integrarse con Inventory-Service para gestión de stock
+- Registrarse en Eureka para descubrimiento de servicios
