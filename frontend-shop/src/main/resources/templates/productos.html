@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Productos</title>
+</head>
+<body>
+<h1>Catálogo de Productos</h1>
+<a href="/carrito">🛒 Ver Carrito</a>
+<hr/>
+
+<div th:each="producto : ${productos}">
+    <h3 th:text="${producto['nombre']}">Nombre del producto</h3>
+    <p>Precio: S/ <span th:text="${producto['precio']}">0.00</span></p>
+
+    <form action="/carrito/agregar" method="post">
+        <input type="hidden" name="idProducto" th:value="${producto['id']}"/>
+        <label>Cantidad:</label>
+        <input type="number" name="cantidad" value="1" min="1"/>
+        <button type="submit">Agregar al carrito</button>
+    </form>
+    <hr/>
+</div>
+</body>
+</html>
