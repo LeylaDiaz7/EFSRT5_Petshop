@@ -1,8 +1,9 @@
 package com.cibertec.Order_Service.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record OrderItemDTO(
-        Integer productoId,
-        Integer cantidad,
-        Double precioU
-) {
-}
+        @NotNull Integer productoId,
+        @NotNull Integer cantidad,
+        @NotNull Double precioU
+) {}

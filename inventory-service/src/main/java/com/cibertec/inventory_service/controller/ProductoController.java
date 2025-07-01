@@ -30,4 +30,11 @@ public class ProductoController {
     public Producto actualizarStock(@PathVariable Integer id, @RequestParam Integer cantidad) {
         return service.actualizarStock(id, cantidad);
     }
+
+    @PutMapping("/{id}/check")
+    public void checkStock(@PathVariable Integer id, @RequestParam Integer cantidad) {
+        service.verificarStock(id, cantidad);
+    }
+
+
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Órdenes</title>
+</head>
+<body style="background-color: #121212; font-family: Arial, sans-serif; color: #ffffff; padding: 20px;">
+
+<h2 style="color: #00ff99;">Listado de Órdenes</h2>
+
+<!-- FORMULARIO DE FILTRO -->
+<form th:action="@{/ordenes}" method="get" style="margin-bottom: 20px; display: flex; gap: 10px;">
+  <input type="text" name="filtroUsuarioId" th:value="${filtroUsuarioId}" placeholder="Filtrar por Usuario ID"
+         style="padding: 8px; background-color: #1e1e1e; color: white; border: 1px solid #444;">
+  <input type="text" name="filtroVentaId" th:value="${filtroVentaId}" placeholder="Filtrar por Venta ID"
+         style="padding: 8px; background-color: #1e1e1e; color: white; border: 1px solid #444;">
+  <button type="submit"
+          style="background-color: #00ff99; color: #000; border: none; padding: 8px 16px; border-radius: 4px;">
+    Buscar
+  </button>
+</form>
+
+<!-- TABLA DE ÓRDENES -->
+<table style="width: 100%; border-collapse: collapse; background-color: #1e1e1e; border-radius: 8px;">
+  <thead>
+  <tr style="background-color: #333;">
+    <th style="padding: 10px; color: #00ff99;">ID Venta</th>
+    <th style="padding: 10px; color: #00ff99;">ID Usuario</th>
+    <th style="padding: 10px; color: #00ff99;">Fecha</th>
+    <th style="padding: 10px; color: #00ff99;">Total</th>
+    <th style="padding: 10px; color: #00ff99;">Estado</th>
+    <th style="padding: 10px; color: #00ff99;">Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="orden : ${ordenes}" style="text-align: center;">
+    <td style="padding: 10px;">[[${orden.ventaId}]]</td>
+    <td style="padding: 10px;">[[${orden.usuarioId}]]</td>
+    <td style="padding: 10px;">[[${#temporals.format(orden.fecha, 'yyyy-MM-dd HH:mm')}]]</td>
+    <td style="padding: 10px;">S/ [[${orden.total}]]</td>
+    <td style="padding: 10px;">[[${orden.status}]]</td>
+    <td style="padding: 10px;">
+      <form th:action="@{'/ordenes/' + ${orden.ventaId} + '/cancelar'}" method="post"
+            th:if="${orden.status != 'CANCELADA'}"
+            style="display:inline;">
+        <input type="hidden" name="_method" value="put"/>
+        <button type="submit"
+                style="background-color: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 4px;">
+          Cancelar
+        </button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

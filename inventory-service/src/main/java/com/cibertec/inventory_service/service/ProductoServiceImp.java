@@ -28,9 +28,22 @@ public class ProductoServiceImp implements ProductoService {
     }
 
     @Override
-    public Producto actualizarStock(Integer id, Integer nuevoStock) {
+    public Producto actualizarStock(Integer id, Integer cantidad) {
         Producto p = repository.findById(id).orElseThrow();
+        int nuevoStock = p.getStock() + cantidad;
+        if (nuevoStock < 0) {
+            throw new IllegalArgumentException("Stock no puede ser negativo");
+        }
         p.setStock(nuevoStock);
         return repository.save(p);
     }
+
+
+    public void verificarStock(Integer productoId, Integer cantidadSolicitada) {
+        Producto producto = obtenerProductoPorId(productoId).orElseThrow();
+        if (producto.getStock() < cantidadSolicitada) {
+            throw new IllegalStateException("Stock insuficiente para el producto con ID " + productoId);
+        }
+    }
+
 }

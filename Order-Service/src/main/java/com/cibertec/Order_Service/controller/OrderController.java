@@ -39,4 +39,8 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Integer ventaId) {
         return ResponseEntity.ok(orderService.cancelOrder(ventaId));
     }
+    @GetMapping
+    public ResponseEntity<List<OrderResponseDTO>> getOrders() {
+        return ResponseEntity.ok(orderService.getOrders());
+    }
 }

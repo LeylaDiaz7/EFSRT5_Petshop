@@ -10,16 +10,4 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUsuarioId(Integer usuarioId);
-
-    //List<Order> findByUsuarioIdOrderByOrderDateDesc(Integer usuarioId);
-
-    /*
-    public interface OrderRepository extends JpaRepository<Order, Integer> {
-        @Query("SELECT o FROM Order o WHERE o.usuarioId = :usuarioId")
-        List<Order> findByUsuarioId(@Param("usuarioId") Integer usuarioId);
-
-        // Versión con ordenación
-        @Query("SELECT o FROM Order o WHERE o.usuarioId = :usuarioId ORDER BY o.orderDate DESC")
-        List<Order> findByUsuarioIdOrderedByDate(@Param("usuarioId") Integer usuarioId);
-    } */
 }

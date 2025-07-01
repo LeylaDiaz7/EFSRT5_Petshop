@@ -18,6 +18,6 @@ public class Producto {
 
     private Integer stock;
 
-    @Column(name = "categoria_id")
+    @Column(name = "categoriaId")
     private Integer categoriaId;
 }

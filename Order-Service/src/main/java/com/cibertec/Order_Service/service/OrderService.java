@@ -26,8 +26,12 @@ public class OrderService {
     @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO orderRequest) {
         // Validar stock con Inventory-Service
-        orderRequest.items().forEach(item ->
-                inventoryClient.checkStock(item.productoId(), item.cantidad()));
+        orderRequest.items().forEach(item -> {
+            if (item.productoId() == null || item.cantidad() == null) {
+                throw new IllegalArgumentException("productoId y cantidad no pueden ser null");
+            }
+            inventoryClient.checkStock(item.productoId(), item.cantidad());
+        });
 
         Order order = new Order();
         order.setUsuarioId(orderRequest.usuarioId());
@@ -56,11 +60,16 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         // Actualizar inventario
-        items.forEach(item ->
-                inventoryClient.updateStock(item.getProductoId(), item.getCantidad()));
+        items.forEach(item -> {
+            if (item.getProductoId() == null || item.getCantidad() == null) {
+                throw new IllegalArgumentException("productoId y cantidad no pueden ser null al actualizar stock");
+            }
+            inventoryClient.updateStock(item.getProductoId(), item.getCantidad());
+        });
 
         return mapToOrderResponse(savedOrder);
     }
+
 
     public List<OrderResponseDTO> getOrdersByUser(Integer userId) {
         return orderRepository.findByUsuarioId(userId).stream()
@@ -111,4 +120,12 @@ public class OrderService {
                 itemDTOs
         );
     }
+
+    public List<OrderResponseDTO> getOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+    }
+
 }

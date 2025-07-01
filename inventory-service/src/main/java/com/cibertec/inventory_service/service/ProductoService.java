@@ -9,4 +9,6 @@ public interface ProductoService {
     List<Producto> listarProductos();
     Optional<Producto> obtenerProductoPorId(Integer id);
     Producto actualizarStock(Integer id, Integer nuevoStock);
+
+    void verificarStock(Integer id, Integer cantidad);
 }
