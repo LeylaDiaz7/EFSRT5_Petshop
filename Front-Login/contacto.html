@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Contacto - PetShop</title>
+  <link rel="stylesheet" href="ESTILOS/style.css">
+</head>
+<body>
+  <header>
+  <h1>🐾 PetShop</h1>
+  <nav>
+    <a href="productos.html">Productos</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="servicios.html">Servicios</a>
+    <a href="contacto.html">Contacto</a>
+    <button onclick="irALogin()" class="btn-login">Iniciar sesión</button>
+  </nav>
+</header>
+
+
+  <main class="contenido-contacto">
+    <h2>📞 Contáctanos</h2>
+
+    <section class="contacto-formulario">
+      <form onsubmit="enviarMensaje(event)">
+        <input type="text" id="nombre" placeholder="Tu nombre" required />
+        <input type="email" id="correo" placeholder="Tu correo" required />
+        <textarea id="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
+        <button type="submit">Enviar mensaje</button>
+        <p id="estadoMensaje"></p>
+      </form>
+
+      <div class="info-contacto">
+        <p><strong>Teléfono:</strong> +51 987 654 321</p>
+        <p><strong>Email:</strong> contacto@petshop.com</p>
+        <p><strong>Dirección:</strong> Av. Principal 123, Lima - Perú</p>
+      </div>
+    </section>
+
+    <!-- Mapa opcional -->
+    <!-- <div class="mapa">
+      <iframe src="https://www.google.com/maps/embed?..." frameborder="0" allowfullscreen></iframe>
+    </div> -->
+  </main>
+
+  <script>
+    function enviarMensaje(event) {
+      event.preventDefault();
+      document.getElementById("estadoMensaje").textContent = "✅ Mensaje enviado correctamente (simulado)";
+      event.target.reset();
+    }
+
+    function irALogin() {
+    window.location.href = "login-cliente.html";
+  }
+  </script>
+</body>
+</html>

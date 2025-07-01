@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Productos - PetShop</title>
+  <link rel="stylesheet" href="ESTILOS/style.css">
+</head>
+<body>
+
+  <!-- HEADER Y NAVEGACIÓN -->
+  <header>
+    <h1>🐾 PetShop</h1>
+    <nav>
+      <a href="productos.html">Productos</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a href="#">Pedidos</a>
+      <a href="contacto.html">Contacto</a>
+      <button id="btnLogout" class="btn-login">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <section class="productos-container" id="contenedor"></section>
+
+  <script>
+    const auth = sessionStorage.getItem("auth");
+    const rol = sessionStorage.getItem("rol");
+
+    if (!auth || rol !== "CLIENT") {
+      alert("Acceso no autorizado. Inicia sesión como cliente.");
+      window.location.href = "login-cliente.html";
+    }
+
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      sessionStorage.clear();
+      window.location.href = "login-cliente.html";
+    });
+
+    async function cargarProductos() {
+      try {
+        const response = await fetch("http://localhost:8081/api/productos", {
+          headers: {
+            Authorization: auth
+          }
+        });
+
+        const productos = await response.json();
+        const contenedor = document.getElementById("contenedor");
+
+       contenedor.innerHTML = productos.map(p => `
+  <div class="card">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="${p.nombre}">
+    <h3>${p.nombre}</h3>
+    <p><strong>Precio:</strong> S/ ${p.precio}</p>
+    <p><strong>Stock:</strong> ${p.stock}</p>
+    <p><strong>Categoría:</strong> ${p.categoriaNombre}</p>
+  </div>
+`).join('');
+      } catch {
+        document.getElementById("contenedor").innerHTML = "<p>Error al cargar productos.</p>";
+      }
+    }
+
+    cargarProductos();
+  </script>
+
+</body>
+</html>

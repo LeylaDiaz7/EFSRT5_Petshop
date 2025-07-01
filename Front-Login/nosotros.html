@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nosotros - PetShop</title>
+  <link rel="stylesheet" href="ESTILOS/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #f1f1f1;
+    }
+
+    header {
+      background-color: #1f1f1f;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #00ffab;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      margin: 0 10px;
+      color: #f1f1f1;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      margin-left: 15px;
+      padding: 8px 14px;
+      background-color: #00ffab;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-login:hover {
+      background-color: #00e29e;
+    }
+
+    .contenido-nosotros {
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .contenido-nosotros h2,
+    .contenido-nosotros h3 {
+      color: #00ffab;
+    }
+
+    .intro, .mision-vision, .valores {
+      margin-bottom: 40px;
+    }
+
+    .intro p,
+    .box p,
+    .valores ul li {
+      color: #ccc;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .mision-vision {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .box {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1 1 300px;
+      box-shadow: 0 0 10px rgba(0,255,171,0.1);
+    }
+
+    .valores ul {
+      padding-left: 20px;
+      list-style-type: square;
+    }
+
+    .valores li {
+      margin-bottom: 10px;
+    }
+
+    .galeria {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .galeria img {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,255,171,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>🐾 PetShop</h1>
+    <nav>
+      <a href="productos.html">Productos</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a href="servicios.html">Servicios</a>
+      <a href="contacto.html">Contacto</a>
+      <button onclick="irALogin()" class="btn-login">Iniciar sesión</button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="contenido-nosotros">
+    <section class="intro">
+      <h2>¿Quiénes somos?</h2>
+      <p>
+        En <strong>PetShop</strong>, somos amantes de los animales. Fundada en 2023, nuestra tienda nació con el objetivo
+        de brindar productos de calidad y atención personalizada a todas las mascotas y sus familias.
+      </p>
+    </section>
+
+    <section class="mision-vision">
+      <div class="box">
+        <h3>🐶 Misión</h3>
+        <p>Ofrecer bienestar y felicidad a las mascotas a través de productos confiables, asesoría experta y atención cercana.</p>
+      </div>
+      <div class="box">
+        <h3>🐱 Visión</h3>
+        <p>Ser la tienda preferida para el cuidado de mascotas en todo el país, promoviendo el amor y respeto por los animales.</p>
+      </div>
+    </section>
+
+    <section class="valores">
+      <h3>💚 Nuestros valores</h3>
+      <ul>
+        <li>Amor por los animales</li>
+        <li>Calidad y confianza</li>
+        <li>Empatía con cada cliente</li>
+        <li>Responsabilidad social</li>
+      </ul>
+    </section>
+
+    <section class="galeria">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Mascota feliz" />
+      <img src="https://cdn-icons-png.flaticon.com/512/2917/2917995.png" alt="Equipo veterinario" />
+      <img src="https://cdn-icons-png.flaticon.com/512/2207/2207595.png" alt="Tienda Petshop" />
+    </section>
+  </main>
+
+  <script>
+    function irALogin() {
+      window.location.href = "login-cliente.html";
+    }
+  </script>
+
+</body>
+</html>

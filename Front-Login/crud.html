@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Productos - PetShop</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-color: #1e1e1e;
+      --input-bg: #2c2c2c;
+      --text-color: #f1f1f1;
+      --accent-color: #00ffab;
+      --danger-color: #ff4b5c;
+      --border-color: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      color: var(--accent-color);
+      font-size: 1.8rem;
+    }
+
+    .logout-btn {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .form-container {
+      background: var(--card-color);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0, 255, 171, 0.15);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 5px;
+    }
+
+    /* Quitar flechas de input number */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    button.guardar-btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background-color: var(--accent-color);
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background-color: var(--card-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #1b1b1b;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background-color: #1a1a1a;
+    }
+
+    .acciones {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .acciones button {
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .editar-btn {
+      background-color: #1976d2;
+      color: white;
+    }
+
+    .eliminar-btn {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .editar-btn:hover {
+      background-color: #1e88e5;
+    }
+
+    .eliminar-btn:hover {
+      background-color: #ff3b4c;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CRUD Productos</h1>
+    <button class="logout-btn" onclick="cerrarSesion()">Cerrar sesión</button>
+  </header>
+
+  <div class="form-container">
+    <h3>Formulario Producto</h3>
+    <input type="hidden" id="codigo">
+    <input type="text" id="nombre" placeholder="Nombre del producto">
+    <input type="number" id="precio" placeholder="Precio">
+    <input type="number" id="stock" placeholder="Stock disponible">
+
+    <!-- Combo box fijo -->
+    <select id="categoriaId">
+      <option value="">Seleccionar categoría</option>
+      <option value="1">Alimentos</option>
+      <option value="2">Juguetes</option>
+      <option value="3">Accesorios</option>
+      <option value="4">Medicinas</option>
+    </select>
+
+    <button class="guardar-btn" onclick="guardarProducto()">Guardar</button>
+  </div>
+
+  <div class="form-container">
+    <input type="text" id="filtro" placeholder="Filtrar productos por nombre..." onkeyup="filtrarTabla()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Categoría</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaProductos"></tbody>
+  </table>
+
+  <script>
+    const API_URL = "http://localhost:8081/api/productos";
+    const AUTH_API = "http://localhost:8082/api/admin";
+    const authEncoded = sessionStorage.getItem("auth");
+
+    if (!authEncoded) {
+      alert("No has iniciado sesión");
+      window.location.href = "login.html";
+    }
+
+    const authHeader = "Basic " + authEncoded;
+
+    fetch(AUTH_API, {
+      headers: { "Authorization": authHeader }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.text();
+    })
+    .then(() => cargarProductos())
+    .catch(() => {
+      alert("Acceso restringido solo para ADMIN");
+      sessionStorage.clear();
+      window.location.href = "login.html";
+    });
+
+    function cargarProductos() {
+      fetch(API_URL, {
+        headers: { "Authorization": authHeader }
+      })
+      .then(r => r.json())
+      .then(productos => {
+        const tabla = document.getElementById("tablaProductos");
+        tabla.innerHTML = "";
+        productos.forEach(p => {
+          tabla.innerHTML += `
+            <tr>
+              <td>${p.codigo}</td>
+              <td>${p.nombre}</td>
+              <td>S/ ${p.precio.toFixed(2)}</td>
+              <td>${p.stock}</td>
+              <td>${p.categoriaNombre}</td>
+              <td>
+                <div class="acciones">
+                  <button class="editar-btn" onclick='editarProducto(${JSON.stringify(p)})'>Editar</button>
+                  <button class="eliminar-btn" onclick='eliminarProducto(${p.codigo})'>Eliminar</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+      });
+    }
+
+    function guardarProducto() {
+      const codigo = document.getElementById("codigo").value;
+      const nombre = document.getElementById("nombre").value;
+      const precio = parseFloat(document.getElementById("precio").value);
+      const stock = parseInt(document.getElementById("stock").value);
+      const categoriaId = parseInt(document.getElementById("categoriaId").value);
+
+      if (!categoriaId || !nombre || isNaN(precio) || isNaN(stock)) {
+        alert("Completa todos los campos correctamente");
+        return;
+      }
+
+      const producto = { nombre, precio, stock, categoriaId };
+      const method = codigo ? "PUT" : "POST";
+      const url = codigo ? `${API_URL}/${codigo}` : API_URL;
+
+      fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": authHeader
+        },
+        body: JSON.stringify(producto)
+      })
+      .then(() => {
+        limpiarFormulario();
+        cargarProductos();
+      });
+    }
+
+    function editarProducto(p) {
+      document.getElementById("codigo").value = p.codigo;
+      document.getElementById("nombre").value = p.nombre;
+      document.getElementById("precio").value = p.precio;
+      document.getElementById("stock").value = p.stock;
+      document.getElementById("categoriaId").value = p.categoriaId;
+    }
+
+    function eliminarProducto(codigo) {
+      if (confirm("¿Eliminar este producto?")) {
+        fetch(`${API_URL}/${codigo}`, {
+          method: "DELETE",
+          headers: { "Authorization": authHeader }
+        }).then(() => cargarProductos());
+      }
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("codigo").value = "";
+      document.getElementById("nombre").value = "";
+      document.getElementById("precio").value = "";
+      document.getElementById("stock").value = "";
+      document.getElementById("categoriaId").value = "";
+    }
+
+    function filtrarTabla() {
+      const filtro = document.getElementById("filtro").value.toLowerCase();
+      const filas = document.querySelectorAll("#tablaProductos tr");
+
+      filas.forEach(fila => {
+        const nombre = fila.children[1].textContent.toLowerCase();
+        fila.style.display = nombre.includes(filtro) ? "" : "none";
+      });
+    }
+
+    function cerrarSesion() {
+      sessionStorage.clear();
+    window.location.href = "login-cliente.html";
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login PetShop</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-color: #1e1e1e;
+      --input-bg: #2c2c2c;
+      --text-color: #f1f1f1;
+      --accent-color: #00ffab;
+      --danger-color: #ff4b5c;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    form {
+      background-color: var(--card-color);
+      padding: 30px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,255,171,0.2);
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    form h2 {
+      text-align: center;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+
+    input {
+      background-color: var(--input-bg);
+      border: 1px solid #444;
+      padding: 12px;
+      border-radius: 8px;
+      color: var(--text-color);
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 255, 171, 0.5);
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: black;
+      font-weight: bold;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00e69d;
+    }
+
+    #mensaje {
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #mensaje.success {
+      color: var(--accent-color);
+    }
+
+    #mensaje.error {
+      color: var(--danger-color);
+    }
+  </style>
+</head>
+<body>
+
+  <form id="loginForm">
+    <h2>Inicia Sesion Administrador</h2>
+    <input type="text" id="username" placeholder="Usuario" required />
+    <input type="password" id="password" placeholder="Contraseña" required />
+    <button type="submit">Ingresar</button>
+    <div id="mensaje"></div>
+    <p style="margin-top:15px;">¿Eres cliente? <a href="login-cliente.html">Inicia sesión aquí</a></p>
+  </form>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const mensaje = document.getElementById("mensaje");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const auth = "Basic " + btoa(username + ":" + password);
+
+      try {
+        const response = await fetch("http://localhost:8082/api/admin", {
+          method: "GET",
+          headers: {
+            "Authorization": auth
+          }
+        });
+
+        if (response.ok) {
+          const text = await response.text();
+          mensaje.textContent = text;
+          mensaje.className = "success";
+
+          // Guardar sesión
+          sessionStorage.setItem("auth", btoa(username + ":" + password));
+
+          // Redirigir al CRUD
+          setTimeout(() => {
+            window.location.href = "crud.html";
+          }, 1000);
+        } else {
+          mensaje.textContent = "Credenciales inválidas o sin permiso.";
+          mensaje.className = "error";
+        }
+      } catch (error) {
+        mensaje.textContent = "Error de conexión con la API.";
+        mensaje.className = "error";
+      }
+    });
+  </script>
+
+</body>
+</html>
