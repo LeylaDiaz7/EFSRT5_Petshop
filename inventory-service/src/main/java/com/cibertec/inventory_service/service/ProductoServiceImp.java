@@ -28,9 +28,19 @@ public class ProductoServiceImp implements ProductoService {
     }
 
     @Override
+    public Optional<Producto> obtenerProductoPorCodigo(Integer codigo) {
+        return repository.findById(codigo);
+    }
+
+    @Override
     public Producto actualizarStock(Integer id, Integer nuevoStock) {
         Producto p = repository.findById(id).orElseThrow();
         p.setStock(nuevoStock);
         return repository.save(p);
+    }
+
+    @Override
+    public void actualizarProducto(Producto producto) {
+        repository.save(producto);
     }
 }
